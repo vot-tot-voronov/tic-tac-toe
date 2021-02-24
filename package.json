@@ -2,7 +2,7 @@
   "name": "tic-tac-toe",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://vot-tot-voronov.github.io/TicTacToe",
+  "homepage": "https://vot-tot-voronov.github.io/tic-tac-toe",
   "main": "main.js",
   "scripts": {
     "deploy": "gh-pages -d dist"
