@@ -1,0 +1,1 @@
+export { animateFigures } from './animateFigures';

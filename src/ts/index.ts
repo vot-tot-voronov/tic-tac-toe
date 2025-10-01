@@ -1,145 +1,73 @@
 import '../main.css';
-import { Ball, Cross } from './background';
-import random from './utils/random';
+import drawBackground from './background';
+import BoardGame from './boardGame';
+import { playNonN } from './menu';
 
-//Canvas background
-const canvasBg = <HTMLCanvasElement>document.getElementById('canvasBg');
-const ctxbg = canvasBg?.getContext('2d');
-
-const widthBg = (canvasBg.width = window.innerWidth);
-const heightBg = (canvasBg.height = window.innerHeight);
-
-const balls: Array<Ball> = [];
-const crosses: Array<Cross> = [];
-
-function loop(canvasContext: CanvasRenderingContext2D) {
-  canvasContext.fillStyle = 'rgba(25, 23, 23, 0.5)';
-  canvasContext.fillRect(0, 0, widthBg, heightBg);
-
-  while (balls.length < 25) {
-    const ball = new Ball(
-      random(0, widthBg),
-      random(0, heightBg),
-      random(-7, 7),
-      random(-7, 7),
-      'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')',
-      random(10, 20),
-    );
-    balls.push(ball);
-    const cross = new Cross(
-      random(0, widthBg),
-      random(0, heightBg),
-      random(-7, 7),
-      random(-7, 7),
-      'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')',
-      random(10, 20),
-    );
-    crosses.push(cross);
-  }
-  for (let i = 0; i < balls.length; i++) {
-    balls[i].draw(canvasContext);
-    crosses[i].draw(canvasContext);
-    balls[i].update(widthBg, heightBg);
-    crosses[i].update(widthBg, heightBg);
-    balls[i].collisionDetect(balls);
-    crosses[i].collisionDetect(crosses);
-  }
-  requestAnimationFrame(() => loop(canvasContext));
-}
-
-if (ctxbg !== null) {
-  loop(ctxbg);
-}
+drawBackground();
 
 // //start page
-// const game3 = document.querySelector('#start3on3');
-// const game5 = document.querySelector('#start5on5');
-// const gameN = document.querySelector('#startNonN');
-// const beginGame = document.querySelector('.start-page');
-// const canvasGame = document.querySelector('.center-wrapper-parent');
-// const sizeBoardPage = document.querySelector('.boardSize');
-// let n;
-// let rpt;
+const gameWrapper = document.querySelector('.game-warapper') as HTMLElement;
+const game3 = document.querySelector('#start3on3') as HTMLParagraphElement;
+const game5 = document.querySelector('#start5on5') as HTMLParagraphElement;
+const gameN = document.querySelector('#startNonN') as HTMLParagraphElement;
+const sizeBoardPage = document.querySelector('.boardSize') as HTMLDivElement;
+const beginGame = document.querySelector('.start-page') as HTMLElement;
+const canvasWrapper = document.querySelector('.center-wrapper-parent') as HTMLElement;
+let boardDimension: number = 3;
+let rpt: number = 0;
 
-// function startgame(event) {
-//   const target = event.target;
-//   n = target.getAttribute('value');
-//   if (n < 5) {
-//     rpt = 3;
-//   } else if (n == 5) {
-//     rpt = 4;
-//   } else if (n > 5) {
-//     rpt = 5;
-//   }
-//   beginGame.style.display = 'none';
-//   canvasGame.style.display = 'block';
-//   menu();
-//   replayBtn();
-//   const elem = document.createElement('canvas');
-//   elem.className = 'center-v';
-//   elem.id = 'TicTacToe';
-//   const cnvwrp = document.querySelector('.canvas-wrapper');
-//   cnvwrp.appendChild(elem);
-//   score(0, 0, 0);
-//   beginPlay();
-// }
+const canvasGame = <HTMLCanvasElement>document.getElementById('TicTacToe');
+const gameCanvasContext = canvasGame.getContext('2d') as CanvasRenderingContext2D;
 
-// game3.addEventListener('click', startgame);
-// game5.addEventListener('click', startgame);
-// gameN.addEventListener('click', function startNonN() {
-//   beginGame.style.display = 'none';
-//   sizeBoardPage.style.display = 'block';
-// });
+const gameBoard = new BoardGame(gameCanvasContext);
 
-// //N * N page
-// const plus = document.querySelector('.plus');
-// const minus = document.querySelector('.minus');
+const gameWrapperObserver = new ResizeObserver(entries => {
+  entries.forEach(entry => {
+    const { inlineSize, blockSize } = entry.borderBoxSize[0];
 
-// function addOne() {
-//   const inputSpace = document.getElementById('input');
-//   if (parseInt(inputSpace.value) <= 9) {
-//     const sum = parseInt(inputSpace.value) + 1;
-//     inputSpace.value = sum;
-//   }
-// }
+    const canvasSize = inlineSize > blockSize ? blockSize * 0.75 : inlineSize * 0.75;
 
-// function removeOne() {
-//   const inputSpace = document.getElementById('input');
-//   if (parseInt(inputSpace.value) > 3) {
-//     const sum = parseInt(inputSpace.value) - 1;
-//     inputSpace.value = sum;
-//   }
-// }
-// plus.addEventListener('click', addOne);
-// minus.addEventListener('click', removeOne);
+    canvasGame.width = canvasSize;
+    canvasGame.height = canvasSize;
 
-// const play = document.querySelector('.play-button');
-// play.addEventListener('click', function () {
-//   sizeBoardPage.style.display = 'none';
-//   canvasGame.style.display = 'block';
-//   menu();
-//   replayBtn();
-//   const elem = document.createElement('canvas');
-//   elem.className = 'center-v';
-//   elem.id = 'TicTacToe';
-//   const cnvwrp = document.querySelector('.canvas-wrapper');
-//   cnvwrp.appendChild(elem);
-//   n = parseInt(document.getElementById('input').value);
-//   if (n > 10) {
-//     n = 10;
-//   }
-//   if (n < 5) {
-//     rpt = 3;
-//   } else if (n == 5) {
-//     rpt = 4;
-//   } else if (n > 5) {
-//     rpt = 5;
-//   }
-//   pointX = 0;
-//   pointO = 0;
-//   score(0, 0, 0);
-//   beginPlay();
-// });
+    gameBoard.drawBoard({ canvasSize, boardDimension });
+  });
+});
+
+gameWrapperObserver.observe(gameWrapper);
+
+function showGameBoard(dimension: number) {
+  if (dimension < 5) {
+    rpt = 3;
+  }
+  if (dimension == 5) {
+    rpt = 4;
+  }
+  if (dimension > 5) {
+    rpt = 5;
+  }
+
+  boardDimension = dimension;
+  beginGame.style.display = 'none';
+  sizeBoardPage.style.display = 'none';
+  canvasWrapper.style.display = 'block';
+
+  const { clientHeight, clientWidth } = gameWrapper;
+  const canvasSize = clientWidth > clientHeight ? clientHeight * 0.75 : clientWidth * 0.75;
+
+  canvasGame.width = canvasSize;
+  canvasGame.height = canvasSize;
+  gameBoard.drawBoard({ canvasSize, boardDimension: dimension });
+}
+
+game3.addEventListener('click', () => showGameBoard(3));
+game5.addEventListener('click', () => showGameBoard(5));
+gameN.addEventListener('click', () => {
+  beginGame.style.display = 'none';
+  sizeBoardPage.style.display = 'block';
+
+  playNonN(showGameBoard);
+});
 
 // function replayBtn() {
 //   const buttonReplay = document.createElement('button');
