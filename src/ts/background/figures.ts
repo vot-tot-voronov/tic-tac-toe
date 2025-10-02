@@ -1,6 +1,6 @@
 import random from '../utils/random';
 
-class Figure {
+abstract class Figure {
   x: number = 0;
   y: number = 0;
   velX: number = 0;
