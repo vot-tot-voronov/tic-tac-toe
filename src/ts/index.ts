@@ -57,7 +57,13 @@ function showGameBoard(dimension: number) {
 
   canvasGame.width = canvasSize;
   canvasGame.height = canvasSize;
+
+  // TODO: вынести в отдельный метод
   gameBoard.drawBoard({ canvasSize, boardDimension: dimension });
+  gameBoard.initializeBoardSquares(canvasSize, boardDimension);
+  const rect = canvasGame.getBoundingClientRect();
+
+  canvasGame.addEventListener('mouseup', event => gameBoard.drawing(event, rect, boardDimension, canvasSize), false);
 }
 
 game3.addEventListener('click', () => showGameBoard(3));
