@@ -14,7 +14,6 @@ const sizeBoardPage = document.querySelector('.boardSize') as HTMLDivElement;
 const beginGame = document.querySelector('.start-page') as HTMLElement;
 const canvasWrapper = document.querySelector('.center-wrapper-parent') as HTMLElement;
 let boardDimension: number = 3;
-let rpt: number = 0;
 
 const canvasGame = <HTMLCanvasElement>document.getElementById('TicTacToe');
 const gameCanvasContext = canvasGame.getContext('2d') as CanvasRenderingContext2D;
@@ -37,16 +36,6 @@ const gameWrapperObserver = new ResizeObserver(entries => {
 gameWrapperObserver.observe(gameWrapper);
 
 function showGameBoard(dimension: number) {
-  if (dimension < 5) {
-    rpt = 3;
-  }
-  if (dimension == 5) {
-    rpt = 4;
-  }
-  if (dimension > 5) {
-    rpt = 5;
-  }
-
   boardDimension = dimension;
   beginGame.style.display = 'none';
   sizeBoardPage.style.display = 'none';
@@ -63,7 +52,10 @@ function showGameBoard(dimension: number) {
   gameBoard.initializeBoardSquares(canvasSize, boardDimension);
   const rect = canvasGame.getBoundingClientRect();
 
-  canvasGame.addEventListener('mouseup', event => gameBoard.drawing(event, rect, boardDimension, canvasSize), false);
+  canvasGame.addEventListener('mouseup', event => {
+    const result = gameBoard.makeAMove(event, rect, boardDimension, canvasSize);
+    console.info(result);
+  });
 }
 
 game3.addEventListener('click', () => showGameBoard(3));

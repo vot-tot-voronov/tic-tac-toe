@@ -14,6 +14,10 @@ export interface IGameboardCell {
 
 export type GameboardArrayType = Array<IGameboardCell>;
 
-type CheckBoardValueType = 'x' | 'o' | 0;
+export type NoWinnerType = 'DRAW' | null;
+export type PlayerType = 'X' | 'O';
+export type CheckBoardValueType = PlayerType | null;
 
 export type CheckBoardValuesType = Array<CheckBoardValueType>;
+
+export type CheckWinnerResultType = CheckBoardValueType | NoWinnerType;
