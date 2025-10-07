@@ -1,6 +1,6 @@
 import '../main.css';
 import drawBackground from './background';
-import BoardGame from './boardGame';
+import BoardGame, { CheckWinnerResultType, DRAW_TEXT } from './boardGame';
 import { playNonN } from './menu';
 
 drawBackground();
@@ -13,7 +13,6 @@ const gameN = document.querySelector('#startNonN') as HTMLParagraphElement;
 const sizeBoardPage = document.querySelector('.boardSize') as HTMLDivElement;
 const beginGame = document.querySelector('.start-page') as HTMLElement;
 const canvasWrapper = document.querySelector('.center-wrapper-parent') as HTMLElement;
-let boardDimension: number = 3;
 
 const canvasGame = <HTMLCanvasElement>document.getElementById('TicTacToe');
 const gameCanvasContext = canvasGame.getContext('2d') as CanvasRenderingContext2D;
@@ -23,38 +22,40 @@ const gameBoard = new BoardGame(gameCanvasContext);
 const gameWrapperObserver = new ResizeObserver(entries => {
   entries.forEach(entry => {
     const { inlineSize, blockSize } = entry.borderBoxSize[0];
-
-    const canvasSize = inlineSize > blockSize ? blockSize * 0.75 : inlineSize * 0.75;
+    const canvasSize = Math.min(inlineSize, blockSize) * 0.75;
 
     canvasGame.width = canvasSize;
     canvasGame.height = canvasSize;
 
-    gameBoard.drawBoard({ canvasSize, boardDimension });
+    gameBoard.drawBoard({ canvasSize });
   });
 });
 
 gameWrapperObserver.observe(gameWrapper);
 
 function showGameBoard(dimension: number) {
-  boardDimension = dimension;
   beginGame.style.display = 'none';
   sizeBoardPage.style.display = 'none';
   canvasWrapper.style.display = 'block';
 
   const { clientHeight, clientWidth } = gameWrapper;
-  const canvasSize = clientWidth > clientHeight ? clientHeight * 0.75 : clientWidth * 0.75;
+  const canvasSize = Math.min(clientWidth, clientHeight) * 0.75;
 
   canvasGame.width = canvasSize;
   canvasGame.height = canvasSize;
 
+  gameBoard.setBoardDimension(dimension);
+
   // TODO: вынести в отдельный метод
-  gameBoard.drawBoard({ canvasSize, boardDimension: dimension });
-  gameBoard.initializeBoardSquares(canvasSize, boardDimension);
-  const rect = canvasGame.getBoundingClientRect();
+  gameBoard.drawBoard({ canvasSize });
+  gameBoard.initializeBoardSquares(canvasSize);
 
   canvasGame.addEventListener('mouseup', event => {
-    const result = gameBoard.makeAMove(event, rect, boardDimension, canvasSize);
-    console.info(result);
+    const result = gameBoard.makeAMove(event, canvasSize);
+
+    if (result !== null) {
+      winner(result);
+    }
   });
 }
 
@@ -144,44 +145,47 @@ gameN.addEventListener('click', () => {
 //   cwrpParent.appendChild(resultO);
 // }
 
-// function winner(who) {
-//   const div = document.createElement('div');
-//   div.className = 'winBox';
-//   const divInside = document.createElement('div');
-//   divInside.className = 'inside';
-//   const winText = document.createElement('p');
-//   winText.className = 'who-win';
-//   winText.textContent = who + ' wins!';
-//   const nextGame = document.createElement('button');
-//   nextGame.className = 'continue-btn send-button';
-//   nextGame.id = 'cntnGame';
-//   nextGame.textContent = 'Continue!';
-//   //delete Who won window and create new canvas
-//   nextGame.addEventListener('click', function () {
-//     document.querySelector('canvas').remove();
-//     const elem = document.createElement('canvas');
-//     elem.className = 'center-v';
-//     elem.id = 'TicTacToe';
-//     const cnvwrp = document.querySelector('.canvas-wrapper');
-//     cnvwrp.appendChild(elem);
-//     document.querySelector('.winBox').remove();
-//     beginPlay();
-//     score(pointX, pointO, 1);
-//   });
-//   const parent = document.querySelector('.canvas-wrapper');
-//   parent.appendChild(div);
-//   const divWidth = document.body.clientWidth;
-//   const divHeight = divWidth / 2.6;
-//   const padding = divHeight / 3.3;
-//   div.style.width = '' + divWidth + 'px';
-//   div.style.height = '' + divHeight + 'px';
-//   div.style.paddingTop = '' + padding + 'px';
-//   const parentDiv = document.querySelector('.winBox');
-//   parentDiv.appendChild(divInside);
-//   const divIns = document.querySelector('.inside');
-//   divIns.appendChild(winText);
-//   divIns.appendChild(nextGame);
-// }
+function winner(who: CheckWinnerResultType) {
+  const div = document.createElement('div');
+  div.className = 'winBox';
+
+  const divInside = document.createElement('div');
+  divInside.className = 'inside';
+
+  const winText = document.createElement('p');
+  winText.className = 'who-win';
+  winText.textContent = who === DRAW_TEXT ? who : `${who} wins!`;
+
+  const nextGameButton = document.createElement('button');
+  nextGameButton.className = 'continue-btn send-button';
+  nextGameButton.id = 'cntnGame';
+  nextGameButton.textContent = 'Continue!';
+  nextGameButton.addEventListener('click', () => {
+    const { clientHeight, clientWidth } = gameWrapper;
+    const canvasSize = Math.min(clientWidth, clientHeight) * 0.75;
+
+    gameBoard.drawBoard({ canvasSize });
+    gameBoard.initializeBoardSquares(canvasSize);
+    div.remove();
+  });
+
+  const parent = document.querySelector('.canvas-wrapper') as HTMLDivElement;
+  parent.appendChild(div);
+
+  const divWidth = document.body.clientWidth;
+  const divHeight = divWidth / 2.6;
+  const padding = divHeight / 3.3;
+
+  div.style.cssText = `
+    width: ${divWidth}px;
+    height: ${divHeight}px;
+    padding-top: ${padding}px;
+  `;
+
+  div.appendChild(divInside);
+  divInside.appendChild(winText);
+  divInside.appendChild(nextGameButton);
+}
 
 // //CANVAS TicTacToe
 // function beginPlay() {

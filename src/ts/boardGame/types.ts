@@ -1,6 +1,7 @@
+import { DRAW_TEXT } from './constants';
+
 export interface IDrawBoardProps {
   canvasSize: number;
-  boardDimension: number;
   lineWidth?: number;
   lineStyle?: string;
 }
@@ -14,7 +15,7 @@ export interface IGameboardCell {
 
 export type GameboardArrayType = Array<IGameboardCell>;
 
-export type NoWinnerType = 'DRAW' | null;
+export type NoWinnerType = typeof DRAW_TEXT | null;
 export type PlayerType = 'X' | 'O';
 export type CheckBoardValueType = PlayerType | null;
 
