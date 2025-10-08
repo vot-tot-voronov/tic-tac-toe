@@ -199,6 +199,10 @@ input[type="number"] {
   display: none;
   transform-style: preserver-3d;
 }
+
+.navButtons {
+  display: none;
+}
 .replayBtn {
   margin-left: 20px;
 }
@@ -230,10 +234,15 @@ input[type="number"] {
   background: #0c0c0c;
   margin-top: 10px;
 }
+
+.gameScoresBox {
+  padding-top: 24px;
+}
 .score {
   font-size: 25px;
   text-align: center;
 }
-.score_o {
-  margin-top: 15px;
+.score:last-child {
+  margin-top: 16px
 }
+

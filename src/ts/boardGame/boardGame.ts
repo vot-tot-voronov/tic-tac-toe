@@ -2,8 +2,10 @@ import {
   CheckBoardValuesType,
   CheckWinnerResultType,
   GameboardArrayType,
+  GameScoresType,
   IDrawBoardProps,
   IGameboardCell,
+  IMakeAMoveReturnValue,
   NoWinnerType,
   PlayerType,
 } from './types';
@@ -17,14 +19,26 @@ class BoardGame {
   private currentPlayer: PlayerType = 'X';
   private winLength = 3; // Длина цепочки для победы
   private movesCount = 0; // Счётчик ходов для определения ничьей
-  private boardDimension = 3;
+  private boardDimension = 3; // Размерность поля
+  // Количество очков
+  private gameScores: GameScoresType = {
+    X: 0,
+    O: 0,
+  };
 
   constructor(canvasContext: CanvasRenderingContext2D) {
     this.canvasContext = canvasContext;
   }
 
-  setBoardDimension(boardDimension: number) {
+  setBoardDimension(boardDimension: number): void {
     this.boardDimension = boardDimension;
+  }
+
+  resetGameScores(): void {
+    this.gameScores = {
+      X: 0,
+      O: 0,
+    };
   }
 
   drawBoard(props: IDrawBoardProps): void {
@@ -216,7 +230,7 @@ class BoardGame {
     return consecutiveCount >= this.winLength;
   }
 
-  makeAMove(event: MouseEvent, canvasSize: number): CheckWinnerResultType {
+  makeAMove(event: MouseEvent, canvasSize: number): IMakeAMoveReturnValue {
     // Определяем координаты курсора относительно доски
     const rect = this.canvasContext.canvas.getBoundingClientRect();
 
@@ -251,10 +265,23 @@ class BoardGame {
         this.currentPlayer = 'X';
       }
 
-      return this.checkWinnerFromLastMove(this.checkBoard, { row: rowIndex, col: colIndex });
+      const result = this.checkWinnerFromLastMove(this.checkBoard, { row: rowIndex, col: colIndex });
+
+      // Увеличиваем количество очков у победителя
+      if (result === 'X' || result === 'O') {
+        this.gameScores[result]++;
+      }
+
+      return {
+        whoWin: result,
+        scores: this.gameScores,
+      };
     }
 
-    return null;
+    return {
+      whoWin: null,
+      scores: this.gameScores,
+    };
   }
 }
 

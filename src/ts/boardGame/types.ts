@@ -22,3 +22,10 @@ export type CheckBoardValueType = PlayerType | null;
 export type CheckBoardValuesType = Array<CheckBoardValueType>;
 
 export type CheckWinnerResultType = CheckBoardValueType | NoWinnerType;
+
+export type GameScoresType = Record<PlayerType, number>;
+
+export interface IMakeAMoveReturnValue {
+  whoWin: CheckWinnerResultType;
+  scores: GameScoresType;
+}
