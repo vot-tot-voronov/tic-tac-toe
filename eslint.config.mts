@@ -12,13 +12,6 @@ export default defineConfig([
   },
   {
     rules: {
-      // 'import/order': [
-      //   'error',
-      //   {
-      //     groups: [['external', 'builtin'], 'internal', ['sibling', 'parent'], 'index'],
-      //     'newlines-between': 'always',
-      //   },
-      // ],
       '@typescript-eslint/naming-convention': [
         'warn',
         {
@@ -52,14 +45,20 @@ export default defineConfig([
           format: ['UPPER_CASE'],
         },
       ],
-      'no-console': [
-        'error',
-        {
-          allow: ['info', 'warn', 'error'],
-        },
-      ],
+      'no-console': ['warn'],
       'no-var': 'error',
       'newline-before-return': 'error',
+      'no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          args: 'after-used',
+          caughtErrors: 'all',
+          ignoreRestSiblings: false,
+          ignoreUsingDeclarations: false,
+          reportUsedIgnorePattern: false,
+        },
+      ],
     },
   },
   tseslint.configs.recommended,
