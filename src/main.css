@@ -138,7 +138,6 @@ input[type="number"] {
   border-radius: 5px;
   font-size: 20px;
   color: #fb8455;
-  font-family: "ZCOOL KuaiLe", cursive, "Arial";
   outline: none;
   transition: all 0.2s ease;
   -webkit-transition: all 0.2s ease;
@@ -172,7 +171,7 @@ input[type="number"] {
 .send-button {
   max-width: 100px;
   width: 100%;
-  padding: 8px;
+  padding: 8px 16px;
   background: #192313;
   border: none;
   border-radius: 5px;
@@ -200,6 +199,27 @@ input[type="number"] {
   transform-style: preserver-3d;
 }
 
+.winBoxWrapper {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 300px;
+  width: 100%;
+  text-align: center;
+  padding: 24px;
+  background-color: rgba(25, 35, 19, 0.8);
+  border-radius: 10px;
+  display: none;
+}
+
+.winInfoText {
+  font-size: 40px;
+  color: #fb7b3c;
+  
+  margin-bottom: 32px;
+}
+
 .navButtons {
   display: none;
 }
@@ -209,40 +229,21 @@ input[type="number"] {
 .menuBtn {
   margin-left: 20px;
 }
-.winBox {
-  position: absolute;
-  top: 0;
-  left: 0;
-  text-align: center;
-}
-.inside {
-  max-width: 300px;
-  width: 100%;
-  height: 200px;
-  padding-top: 5%;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: rgba(25, 35, 19, 0.8);
-  border-radius: 10px;
-}
-.who-win {
-  font-size: 40px;
-  color: #fb7b3c;
-}
-.continue-btn {
+
+.continueBtn {
   max-width: 120px;
   background: #0c0c0c;
   margin-top: 10px;
 }
 
 .gameScoresBox {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
   padding-top: 24px;
 }
 .score {
-  font-size: 25px;
+  font-size: 24px;
   text-align: center;
-}
-.score:last-child {
-  margin-top: 16px
 }
 
