@@ -114,44 +114,20 @@ function updateScores(scores?: GameScoresType) {
   oParagraph.textContent = `O: ${scores?.O ?? 0}`;
 }
 
+const winBox = <HTMLDivElement>document.querySelector('.winBoxWrapper');
+const winText = <HTMLParagraphElement>document.querySelector('.winInfoText');
+const continueBtn = <HTMLButtonElement>document.querySelector('.continueBtn');
+
 function showWinner(who: CheckWinnerResultType) {
-  const div = document.createElement('div');
-  div.className = 'winBox';
-
-  const divInside = document.createElement('div');
-  divInside.className = 'inside';
-
-  const winText = document.createElement('p');
-  winText.className = 'who-win';
+  winBox.style.display = 'block';
   winText.textContent = who === DRAW_TEXT ? who : `${who} wins!`;
 
-  const nextGameButton = document.createElement('button');
-  nextGameButton.className = 'continue-btn send-button';
-  nextGameButton.id = 'cntnGame';
-  nextGameButton.textContent = 'Continue!';
-  nextGameButton.addEventListener('click', () => {
+  continueBtn.addEventListener('click', () => {
     const { clientHeight, clientWidth } = gameWrapper;
     const canvasSize = Math.min(clientWidth, clientHeight) * CANVAS_SIZE_RATIO;
 
     gameBoard.drawBoard({ canvasSize });
     gameBoard.initializeBoardSquares(canvasSize);
-    div.remove();
+    winBox.style.display = 'none';
   });
-
-  const parent = document.querySelector('.canvas-wrapper') as HTMLDivElement;
-  parent.appendChild(div);
-
-  const divWidth = document.body.clientWidth;
-  const divHeight = divWidth / 2.6;
-  const padding = divHeight / 3.3;
-
-  div.style.cssText = `
-    width: ${divWidth}px;
-    height: ${divHeight}px;
-    padding-top: ${padding}px;
-  `;
-
-  div.appendChild(divInside);
-  divInside.appendChild(winText);
-  divInside.appendChild(nextGameButton);
 }
