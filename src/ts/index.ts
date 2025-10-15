@@ -1,4 +1,4 @@
-import '../main.css';
+import '../scss/main.scss';
 import drawBackground from './background';
 import BoardGame, { CheckWinnerResultType, DRAW_TEXT, GameScoresType } from './boardGame';
 import { CANVAS_SIZE_RATIO } from './constants';
@@ -8,19 +8,23 @@ drawBackground();
 
 // //start page
 const gameWrapper = <HTMLElement>document.querySelector('.game-warapper');
-const game3 = <HTMLParagraphElement>document.querySelector('#start3on3');
-const game5 = <HTMLParagraphElement>document.querySelector('#start5on5');
-const gameN = <HTMLParagraphElement>document.querySelector('#startNonN');
-const sizeBoardPage = <HTMLDivElement>document.querySelector('.boardSize');
-const beginGame = <HTMLElement>document.querySelector('.start-page');
-const canvasWrapper = <HTMLElement>document.querySelector('.center-wrapper-parent');
-const navButtons = <HTMLDivElement>document.querySelector('.navButtons');
-const menuBtn = <HTMLButtonElement>document.querySelector('.menuBtn');
-const replayBtn = <HTMLButtonElement>document.querySelector('.replayBtn');
-const xParagraph = <HTMLParagraphElement>document.getElementById('scoreX');
-const oParagraph = <HTMLParagraphElement>document.getElementById('scoreO');
+const game3 = <HTMLParagraphElement>document.getElementById('start3on3');
+const game5 = <HTMLParagraphElement>document.getElementById('start5on5');
+const gameN = <HTMLParagraphElement>document.getElementById('startNonN');
+const boardDimension = <HTMLDivElement>document.querySelector('.board-dimension');
+const startMenu = <HTMLElement>document.querySelector('.start-menu');
+const canvasWrapper = <HTMLElement>document.querySelector('.canvas-wrapper');
+const navBar = <HTMLDivElement>document.querySelector('.navigation');
+const menuBtn = <HTMLButtonElement>document.getElementById('menu-btn');
+const replayBtn = <HTMLButtonElement>document.getElementById('replay-btn');
+const xParagraph = <HTMLParagraphElement>document.getElementById('score-X');
+const oParagraph = <HTMLParagraphElement>document.getElementById('score-O');
 
-const canvasGame = <HTMLCanvasElement>document.getElementById('TicTacToe');
+const alertBox = <HTMLDivElement>document.querySelector('.alert-box');
+const alerText = <HTMLParagraphElement>document.querySelector('.alert-box__text');
+const continueBtn = <HTMLButtonElement>document.getElementById('continue-btn');
+
+const canvasGame = <HTMLCanvasElement>document.getElementById('tic-tac-toe');
 const gameCanvasContext = <CanvasRenderingContext2D>canvasGame.getContext('2d');
 
 const gameBoard = new BoardGame(gameCanvasContext);
@@ -40,10 +44,10 @@ const gameWrapperObserver = new ResizeObserver(entries => {
 gameWrapperObserver.observe(gameWrapper);
 
 function showGameBoard(dimension: number) {
-  beginGame.style.display = 'none';
-  sizeBoardPage.style.display = 'none';
+  startMenu.style.display = 'none';
+  boardDimension.style.display = 'none';
   canvasWrapper.style.display = 'block';
-  navButtons.style.display = 'block';
+  navBar.style.display = 'flex';
 
   const { clientHeight, clientWidth } = gameWrapper;
   const canvasSize = Math.min(clientWidth, clientHeight) * CANVAS_SIZE_RATIO;
@@ -74,8 +78,8 @@ function showGameBoard(dimension: number) {
 game3.addEventListener('click', () => showGameBoard(3));
 game5.addEventListener('click', () => showGameBoard(5));
 gameN.addEventListener('click', () => {
-  beginGame.style.display = 'none';
-  sizeBoardPage.style.display = 'block';
+  startMenu.style.display = 'none';
+  boardDimension.style.display = 'block';
 
   playNonN(showGameBoard);
 });
@@ -91,21 +95,16 @@ function replayHandler() {
 
     updateScores();
 
-    const winBox = document.querySelector('.winBox');
-
-    if (winBox) winBox.remove();
+    alertBox.style.display = 'none';
   });
 }
 
 function backToMenuHandler() {
   menuBtn.addEventListener('click', () => {
-    navButtons.style.display = 'none';
+    navBar.style.display = 'none';
     canvasWrapper.style.display = 'none';
-    beginGame.style.display = 'block';
-
-    const winBox = document.querySelector('.winBox');
-
-    if (winBox) winBox.remove();
+    startMenu.style.display = 'flex';
+    alertBox.style.display = 'none';
   });
 }
 
@@ -114,13 +113,9 @@ function updateScores(scores?: GameScoresType) {
   oParagraph.textContent = `O: ${scores?.O ?? 0}`;
 }
 
-const winBox = <HTMLDivElement>document.querySelector('.winBoxWrapper');
-const winText = <HTMLParagraphElement>document.querySelector('.winInfoText');
-const continueBtn = <HTMLButtonElement>document.querySelector('.continueBtn');
-
 function showWinner(who: CheckWinnerResultType) {
-  winBox.style.display = 'block';
-  winText.textContent = who === DRAW_TEXT ? who : `${who} wins!`;
+  alertBox.style.display = 'block';
+  alerText.textContent = who === DRAW_TEXT ? who : `${who} wins!`;
 
   continueBtn.addEventListener('click', () => {
     const { clientHeight, clientWidth } = gameWrapper;
@@ -128,6 +123,6 @@ function showWinner(who: CheckWinnerResultType) {
 
     gameBoard.drawBoard({ canvasSize });
     gameBoard.initializeBoardSquares(canvasSize);
-    winBox.style.display = 'none';
+    alertBox.style.display = 'none';
   });
 }

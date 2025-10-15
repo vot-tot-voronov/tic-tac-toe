@@ -1,1 +1,1 @@
-export const DRAW_TEXT = 'DRAW';
+export const DRAW_TEXT = 'Final result: draw!';

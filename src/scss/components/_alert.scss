@@ -1,0 +1,22 @@
+.alert-box {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 45rem;
+  width: 100%;
+  text-align: center;
+  padding: 2.4rem;
+  background-color: rgb(var(--primary-dark-rgb) / 90%);
+  border-radius: 1.6rem;
+  display: none;
+
+  &__text {
+    font-size: var(--l-font-size);
+    color: var(--primary-orange);
+  }
+
+  &__btn {
+    margin-top: 2.4rem;
+  }
+}

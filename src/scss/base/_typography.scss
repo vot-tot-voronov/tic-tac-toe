@@ -1,0 +1,16 @@
+body {
+  font-family: 'ZCOOL KuaiLe', cursive, Arial;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  height: inherit;
+  color: var(--primary-color);
+}
+
+.main-title {
+  font-size: var(--xl-font-size);
+}
+
+.second-title {
+  font-size: var(--l-font-size);
+}
