@@ -1,0 +1,24 @@
+.canvas-wrapper {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  &__canvas {
+    display: block;
+    margin: 0 auto;
+  }
+
+  &__scores {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding-top: 24px;
+  }
+
+  &__score {
+    font-size: var(--m-font-size);
+    text-align: center;
+  }
+}

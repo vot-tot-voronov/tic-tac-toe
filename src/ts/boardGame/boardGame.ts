@@ -1,3 +1,4 @@
+import { DRAW_TEXT } from './constants';
 import {
   CheckBoardValuesType,
   CheckWinnerResultType,
@@ -164,7 +165,7 @@ class BoardGame {
 
   private checkDraw(maxMoves: number): NoWinnerType {
     if (this.movesCount === maxMoves) {
-      return 'DRAW';
+      return DRAW_TEXT;
     }
 
     return null;
@@ -218,7 +219,7 @@ class BoardGame {
       consecutiveCount++;
     }
 
-    // Возвращаемся назад по противоположному направлению
+    // Проходим по противоположному направлению
     for (let step = 1; step < this.winLength; step++) {
       const prevRow = startRow - step * deltaRow;
       const prevCol = startCol - step * deltaCol;

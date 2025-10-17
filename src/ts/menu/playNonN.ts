@@ -1,25 +1,56 @@
+const ONLY_NUMBER_REG_EXP = /^\d+$/;
+
 function playNonN(showGameBoard: (boardDimension: number) => void) {
-  const plus = document.querySelector('.plus') as HTMLButtonElement;
-  const minus = document.querySelector('.minus') as HTMLButtonElement;
-  const inputSpace = document.getElementById('input') as HTMLInputElement;
+  const increaseBtn = <HTMLButtonElement>document.getElementById('increase-btn');
+  const decreaseBtn = <HTMLButtonElement>document.getElementById('decrease-btn');
+  const dimensionInput = <HTMLInputElement>document.getElementById('dimension-input');
 
-  function addOne() {
-    if (parseInt(inputSpace.value) <= 9) {
-      inputSpace.value = String(parseInt(inputSpace.value) + 1);
+  let lastValidValue: string = '3'; // Хранит последнюю корректную запись
+
+  function increaseDimension() {
+    if (parseInt(dimensionInput.value) <= 9) {
+      dimensionInput.value = String(parseInt(dimensionInput.value) + 1);
     }
   }
 
-  function removeOne() {
-    if (parseInt(inputSpace.value) > 3) {
-      inputSpace.value = String(parseInt(inputSpace.value) - 1);
+  function decreaseDimension() {
+    if (parseInt(dimensionInput.value) > 3) {
+      dimensionInput.value = String(parseInt(dimensionInput.value) - 1);
     }
   }
 
-  plus.addEventListener('click', addOne);
-  minus.addEventListener('click', removeOne);
+  // Обработчик события blur (после потери фокуса)
+  dimensionInput.addEventListener('blur', () => {
+    const currentValue = dimensionInput.value.trim();
 
-  const play = document.querySelector('.play-button') as HTMLButtonElement;
-  play.addEventListener('click', () => showGameBoard(parseInt(inputSpace.value)));
+    if (ONLY_NUMBER_REG_EXP.test(currentValue)) {
+      // Проверяем, является ли значение числом
+      const numericValue = parseInt(currentValue);
+
+      // Проверяем диапазон чисел от 3 до 10 включительно
+      if (numericValue >= 3 && numericValue <= 10) {
+        lastValidValue = numericValue.toString(); // Запоминаем корректное значение
+      } else {
+        dimensionInput.value = lastValidValue.toString(); // Восстанавливаем последнее правильное значение
+      }
+    } else {
+      dimensionInput.value = lastValidValue; // Восстанавливаем последнее правильное значение
+    }
+  });
+
+  increaseBtn.addEventListener('click', increaseDimension);
+  decreaseBtn.addEventListener('click', decreaseDimension);
+
+  const play = <HTMLButtonElement>document.getElementById('play-btn');
+  play.addEventListener(
+    'click',
+    () => {
+      showGameBoard(parseInt(dimensionInput.value));
+      increaseBtn.removeEventListener('click', increaseDimension);
+      decreaseBtn.removeEventListener('click', decreaseDimension);
+    },
+    { once: true },
+  );
 }
 
 export { playNonN };

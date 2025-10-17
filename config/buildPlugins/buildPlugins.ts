@@ -1,7 +1,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { IBuildPluginsProps } from './types';
-import { WebpackPluginInstance } from 'webpack';
+import { ProgressPlugin, WebpackPluginInstance } from 'webpack';
 
 function buildPlugins({ isDevMode, htmlPath }: IBuildPluginsProps) {
   const plugins: Array<WebpackPluginInstance> = [
@@ -9,6 +9,7 @@ function buildPlugins({ isDevMode, htmlPath }: IBuildPluginsProps) {
       title: 'Tic-Tac-Toe',
       template: htmlPath,
     }),
+    new ProgressPlugin(),
   ];
 
   if (!isDevMode) {

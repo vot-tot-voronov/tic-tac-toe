@@ -1,4 +1,6 @@
 import { Configuration } from 'webpack';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 import { IWebpackConfigProps } from './interfaces';
 import buildLoaders from './buildLoaders';
 import buildPlugins from './buildPlugins';
@@ -13,12 +15,16 @@ function webpackConfigFactory({ paths, mode }: IWebpackConfigProps): Configurati
     entry,
     output: {
       path: output,
-      filename: 'main.js',
+      filename: '[name].[contenthash].js',
+      clean: true,
     },
     module: {
       rules: buildLoaders({ isDevMode }),
     },
     plugins: buildPlugins({ htmlPath: html, isDevMode }),
+    optimization: {
+      minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
+    },
     resolve: {
       extensions: ['.ts', '.js'],
       preferAbsolute: true,
