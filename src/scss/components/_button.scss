@@ -1,7 +1,9 @@
+@use '../abstracts/variables';
+
 @mixin hover-btn {
   &:hover {
-    background: var(--black);
-    color: var(--secondary-primary-color);
+    background: variables.$black;
+    color: variables.$secondary-primary-color;
     transform: scale(1.2);
   }
 }
@@ -10,7 +12,7 @@
   &:active,
   &:focus {
     outline: none;
-    box-shadow: 0 0.5rem 1rem var(--primary-color);
+    box-shadow: 0 0.5rem 1rem variables.$primary-color;
   }
 }
 
@@ -19,10 +21,10 @@
   &:link,
   &:visited {
     padding: 0.8rem 1.6rem;
-    background: var(--primary-dark);
+    background: variables.$primary-dark;
     border-radius: 1rem;
-    font-size: var(--default-font-size);
-    color: var(--primary-orange);
+    font-size: variables.$default-font-size;
+    color: variables.$primary-orange;
     font-family: inherit;
     text-decoration: none;
     transition: all 0.2s;
@@ -35,23 +37,23 @@
 
   &--continue {
     max-width: 12rem;
-    background: var(--secondary-black);
+    background: variables.$secondary-black;
   }
 
   &--rounded {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--m-font-size);
+    font-size: variables.$m-font-size;
     border-radius: 20%;
     width: 4.8rem;
-    height: var(--height-m);
+    height: variables.$height-m;
     padding: unset;
   }
 
   &--large {
     padding: 1.2rem 4.8rem;
-    background-color: rgb(var(--primary-dark) / 0%);
-    font-size: var(--m-font-size);
+    background-color: variables.$primary-dark-opacity-0;
+    font-size: variables.$m-font-size;
   }
 }

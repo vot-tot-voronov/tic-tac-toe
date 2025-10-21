@@ -5,7 +5,7 @@ function playNonN(showGameBoard: (boardDimension: number) => void) {
   const decreaseBtn = <HTMLButtonElement>document.getElementById('decrease-btn');
   const dimensionInput = <HTMLInputElement>document.getElementById('dimension-input');
 
-  let lastValidValue: string = '3'; // Хранит последнюю корректную запись
+  let lastValidValue: string = '3'; // Keeps the most recent valid entry
 
   function increaseDimension() {
     if (parseInt(dimensionInput.value) <= 9) {
@@ -19,22 +19,22 @@ function playNonN(showGameBoard: (boardDimension: number) => void) {
     }
   }
 
-  // Обработчик события blur (после потери фокуса)
+  // Blur event handler
   dimensionInput.addEventListener('blur', () => {
     const currentValue = dimensionInput.value.trim();
 
     if (ONLY_NUMBER_REG_EXP.test(currentValue)) {
-      // Проверяем, является ли значение числом
+      // Check if the value is a number
       const numericValue = parseInt(currentValue);
 
-      // Проверяем диапазон чисел от 3 до 10 включительно
+      // Check if the number is in the range 3 to 10 (inclusive)
       if (numericValue >= 3 && numericValue <= 10) {
-        lastValidValue = numericValue.toString(); // Запоминаем корректное значение
+        lastValidValue = numericValue.toString(); // Remember the correct value
       } else {
-        dimensionInput.value = lastValidValue.toString(); // Восстанавливаем последнее правильное значение
+        dimensionInput.value = lastValidValue.toString(); // Restore the last valid value
       }
     } else {
-      dimensionInput.value = lastValidValue; // Восстанавливаем последнее правильное значение
+      dimensionInput.value = lastValidValue; // Restore the last valid value
     }
   });
 

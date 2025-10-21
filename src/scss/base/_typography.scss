@@ -1,16 +1,23 @@
+@use '../abstracts/mixins';
+@use '../abstracts/variables';
+
 body {
   font-family: 'ZCOOL KuaiLe', cursive, Arial;
   padding: 0;
   margin: 0;
   overflow: hidden;
   height: inherit;
-  color: var(--primary-color);
+  color: variables.$primary-color;
 }
 
 .main-title {
-  font-size: var(--xl-font-size);
+  font-size: variables.$xl-font-size;
+
+  @include mixins.respond(phone) {
+    text-align: center;
+  }
 }
 
 .second-title {
-  font-size: var(--l-font-size);
+  font-size: variables.$l-font-size;
 }

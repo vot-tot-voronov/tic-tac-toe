@@ -1,3 +1,5 @@
+@use '../abstracts/variables';
+
 .canvas-wrapper {
   display: none;
   position: absolute;
@@ -18,7 +20,7 @@
   }
 
   &__score {
-    font-size: var(--m-font-size);
+    font-size: variables.$m-font-size;
     text-align: center;
   }
 }

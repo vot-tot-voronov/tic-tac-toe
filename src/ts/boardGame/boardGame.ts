@@ -11,17 +11,17 @@ import {
   PlayerType,
 } from './types';
 
-const DEFAULT_OFFSET_RATIO = 50; // значение отступа внутри клетки
+const DEFAULT_OFFSET_RATIO = 50; // Cell padding ratio (percentage of cell size)
 
 class BoardGame {
   private canvasContext: CanvasRenderingContext2D;
-  private boardGame: Array<GameboardArrayType> = [];
-  private checkBoard: Array<CheckBoardValuesType> = [];
+  private boardGame: Array<GameboardArrayType> = []; // Array containing coordinates of each field
+  private checkBoard: Array<CheckBoardValuesType> = []; // Array containing information about occupied cells
   private currentPlayer: PlayerType = 'X';
-  private winLength = 3; // Длина цепочки для победы
-  private movesCount = 0; // Счётчик ходов для определения ничьей
-  private boardDimension = 3; // Размерность поля
-  // Количество очков
+  private winLength = 3; // Length of the winning chain
+  private movesCount = 0; // Move counter for draw determination
+  private boardDimension = 3; // Dimensions of the playing area
+  // Score
   private gameScores: GameScoresType = {
     X: 0,
     O: 0,
@@ -43,7 +43,9 @@ class BoardGame {
   }
 
   drawBoard(props: IDrawBoardProps): void {
-    const { canvasSize, lineWidth = 7, lineStyle = 'yellow' } = props;
+    const { lineWidth = 7, lineStyle = 'yellow' } = props;
+    const rect = this.canvasContext.canvas.getBoundingClientRect();
+    const canvasSize = rect.right - rect.left;
 
     const lineStart = 4;
     const lineLenght = canvasSize - 5;
@@ -54,12 +56,12 @@ class BoardGame {
     this.canvasContext.strokeStyle = lineStyle;
     this.canvasContext.lineCap = 'round';
     this.canvasContext.beginPath();
-    // Горизонтальные линии
+    // Horizontal lines
     for (let y = 1; y <= this.boardDimension - 1; y++) {
       this.canvasContext.moveTo(lineStart, y * cell);
       this.canvasContext.lineTo(lineLenght, y * cell);
     }
-    // Вериткальные линии
+    // Vertical lines
     for (let x = 1; x <= this.boardDimension - 1; x++) {
       this.canvasContext.moveTo(x * cell, lineStart);
       this.canvasContext.lineTo(x * cell, lineLenght);
@@ -67,7 +69,7 @@ class BoardGame {
 
     this.canvasContext.stroke();
 
-    // Устанавливаем длину цепочки в зависимости от размерности доски
+    // Determine the chain length according to the board size
     if (this.boardDimension < 5) {
       this.winLength = 3;
     }
@@ -95,8 +97,17 @@ class BoardGame {
     }
   }
 
-  initializeBoardSquares(canvasSize: number): void {
-    const cell = canvasSize / this.boardDimension;
+  private getBoardSizes(): [number, number] {
+    const rect = this.canvasContext.canvas.getBoundingClientRect();
+    const canvasSize = rect.right - rect.left;
+    const cellWidth = canvasSize / this.boardDimension;
+
+    return [cellWidth, canvasSize];
+  }
+
+  // boardGame and checkBoard arrays initialization
+  initializeBoardSquares(): void {
+    const [cellWidth] = this.getBoardSizes();
     this.movesCount = 0;
 
     for (let i = 0; i <= this.boardDimension - 1; i++) {
@@ -104,12 +115,39 @@ class BoardGame {
       this.checkBoard[i] = [];
       for (let j = 0; j <= this.boardDimension - 1; j++) {
         this.boardGame[i][j] = {
-          left: Math.round(cell * j),
-          top: Math.round(cell * i),
-          right: Math.round(cell + cell * j),
-          bottom: Math.round(cell + cell * i),
+          left: Math.round(cellWidth * j),
+          top: Math.round(cellWidth * i),
+          right: Math.round(cellWidth + cellWidth * j),
+          bottom: Math.round(cellWidth + cellWidth * i),
         };
         this.checkBoard[i][j] = null;
+      }
+    }
+  }
+
+  // Method for redrawing the game board based on checkBoard array
+  recalculateBoardGame(): void {
+    const [cellWidth, canvasSize] = this.getBoardSizes();
+
+    for (let i = 0; i <= this.boardDimension - 1; i++) {
+      this.boardGame[i] = [];
+      for (let j = 0; j <= this.boardDimension - 1; j++) {
+        const cellCoordinate = {
+          left: Math.round(cellWidth * j),
+          top: Math.round(cellWidth * i),
+          right: Math.round(cellWidth + cellWidth * j),
+          bottom: Math.round(cellWidth + cellWidth * i),
+        };
+        this.boardGame[i][j] = cellCoordinate;
+
+        const currentCell = this.checkBoard[i][j];
+        if (currentCell !== null) {
+          if (currentCell === 'O') {
+            this.drawO(cellCoordinate, canvasSize);
+          } else {
+            this.drawX(cellCoordinate);
+          }
+        }
       }
     }
   }
@@ -146,8 +184,8 @@ class BoardGame {
 
   private drawO(currentCell: IGameboardCell, canvasSize: number): void {
     const cell = canvasSize / this.boardDimension;
-    const centerX = currentCell.left + cell / 2; // Расчёт центра окружности
-    const centerY = currentCell.top + cell / 2; // Расчёт центра окружности
+    const centerX = currentCell.left + cell / 2; // Computing the center of a circle
+    const centerY = currentCell.top + cell / 2; // Computing the center of a circle
 
     this.canvasContext.lineCap = 'round';
     this.canvasContext.strokeStyle = '#a1e8f5';
@@ -178,7 +216,7 @@ class BoardGame {
     const { row, col } = lastMove;
     const player = checkBoard[row][col];
 
-    // Проверка горизонтального направления
+    // Horizontal direction check
     if (this.checkDirection(checkBoard, row, col, 0, 1)) return player;
     if (this.checkDirection(checkBoard, row, col, 0, -1)) return player;
 
@@ -186,20 +224,18 @@ class BoardGame {
     if (this.checkDirection(checkBoard, row, col, 1, 0)) return player;
     if (this.checkDirection(checkBoard, row, col, -1, 0)) return player;
 
-    // Проверка главной диагонали (слева вверху → вправо вниз)
+    // Main diagonal check (from top‑left to bottom‑right)
     if (this.checkDirection(checkBoard, row, col, 1, 1)) return player;
     if (this.checkDirection(checkBoard, row, col, -1, -1)) return player;
 
-    // Проверка обратной диагонали (справа вверху → влево вниз)
+    // Anti‑diagonal check (from top‑right to bottom‑left)
     if (this.checkDirection(checkBoard, row, col, 1, -1)) return player;
     if (this.checkDirection(checkBoard, row, col, -1, 1)) return player;
 
-    return this.checkDraw(Math.pow(this.boardDimension, 2)); // Проверка на ничью и возврат результата
+    return this.checkDraw(Math.pow(this.boardDimension, 2)); // Check for a draw and return the result
   }
 
-  /**
-   * Проверяет одно направление от указанной клетки
-   */
+  // Checks one direction from the specified cell
   private checkDirection(
     board: Array<CheckBoardValuesType>,
     startRow: number,
@@ -208,9 +244,9 @@ class BoardGame {
     deltaCol: number,
   ): boolean {
     const player = board[startRow][startCol];
-    let consecutiveCount = 1; // Начинаем считать с текущей клетки
+    let consecutiveCount = 1; // Begin counting at the current cell
 
-    // Идём вперёд по указанному направлению
+    // Move forward in the specified direction
     for (let step = 1; step < this.winLength; step++) {
       const nextRow = startRow + step * deltaRow;
       const nextCol = startCol + step * deltaCol;
@@ -219,7 +255,7 @@ class BoardGame {
       consecutiveCount++;
     }
 
-    // Проходим по противоположному направлению
+    // Move in the opposite direction
     for (let step = 1; step < this.winLength; step++) {
       const prevRow = startRow - step * deltaRow;
       const prevCol = startCol - step * deltaCol;
@@ -231,21 +267,22 @@ class BoardGame {
     return consecutiveCount >= this.winLength;
   }
 
-  makeAMove(event: MouseEvent, canvasSize: number): IMakeAMoveReturnValue {
-    // Определяем координаты курсора относительно доски
+  makeAMove(event: MouseEvent): IMakeAMoveReturnValue {
+    // Determine the cursor coordinates relative to the board
     const rect = this.canvasContext.canvas.getBoundingClientRect();
+    const canvasSize = rect.right - rect.left;
 
     const mousePosition = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
     };
 
-    // Высчитываем номер строки и столбца
+    // Calculate the row and column numbers
     const cellWidth = canvasSize / this.boardDimension;
     const rowIndex = Math.floor(mousePosition.y / cellWidth);
     const colIndex = Math.floor(mousePosition.x / cellWidth);
 
-    // Проверяем, находится ли выбранная клетка в пределах поля и свободна ли она
+    // Check if the selected cell is within bounds and unoccupied
     if (
       rowIndex >= 0 &&
       rowIndex < this.boardDimension &&
@@ -253,9 +290,9 @@ class BoardGame {
       colIndex < this.boardDimension &&
       this.checkBoard[rowIndex][colIndex] === null
     ) {
-      this.movesCount++; // Увеличение счётчика ходов
+      this.movesCount++; // Increase the move count
 
-      // Ставим фигуру и меняем активного игрока
+      // Set the piece and update the active player
       if (this.currentPlayer === 'X') {
         this.drawX(this.boardGame[rowIndex][colIndex]);
         this.checkBoard[rowIndex][colIndex] = 'X';
@@ -268,7 +305,7 @@ class BoardGame {
 
       const result = this.checkWinnerFromLastMove(this.checkBoard, { row: rowIndex, col: colIndex });
 
-      // Увеличиваем количество очков у победителя
+      // Increase the winner’s score
       if (result === 'X' || result === 'O') {
         this.gameScores[result]++;
       }
