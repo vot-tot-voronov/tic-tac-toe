@@ -6,7 +6,7 @@ import { playNonN } from './menu';
 
 drawBackground();
 
-// //start page
+// Start page
 const gameWrapper = <HTMLElement>document.querySelector('.game-warapper');
 const game3 = <HTMLParagraphElement>document.getElementById('start3on3');
 const game5 = <HTMLParagraphElement>document.getElementById('start5on5');
@@ -31,17 +31,31 @@ const gameBoard = new BoardGame(gameCanvasContext);
 
 const gameWrapperObserver = new ResizeObserver(entries => {
   entries.forEach(entry => {
-    const { inlineSize, blockSize } = entry.borderBoxSize[0];
-    const canvasSize = Math.min(inlineSize, blockSize) * CANVAS_SIZE_RATIO;
+    if (canvasWrapper.checkVisibility()) {
+      const { inlineSize, blockSize } = entry.borderBoxSize[0];
+      const canvasSize = Math.min(inlineSize, blockSize) * CANVAS_SIZE_RATIO;
 
-    canvasGame.width = canvasSize;
-    canvasGame.height = canvasSize;
+      canvasGame.width = canvasSize;
+      canvasGame.height = canvasSize;
 
-    gameBoard.drawBoard({ canvasSize });
+      gameBoard.drawBoard({ canvasSize });
+      gameBoard.recalculateBoardGame();
+    }
   });
 });
 
 gameWrapperObserver.observe(gameWrapper);
+
+function makeAMoveEventListener(event: MouseEvent) {
+  const { whoWin, scores } = gameBoard.makeAMove(event);
+
+  if (whoWin !== null) {
+    canvasGame.removeEventListener('mouseup', makeAMoveEventListener); // Remove the event listener when the game ends
+
+    showWinner(whoWin);
+    updateScores(scores);
+  }
+}
 
 function showGameBoard(dimension: number) {
   startMenu.style.display = 'none';
@@ -61,18 +75,10 @@ function showGameBoard(dimension: number) {
   backToMenuHandler();
   replayHandler();
 
-  // TODO: вынести в отдельный метод initializeGame
   gameBoard.drawBoard({ canvasSize });
-  gameBoard.initializeBoardSquares(canvasSize);
+  gameBoard.initializeBoardSquares();
 
-  canvasGame.addEventListener('mouseup', event => {
-    const { whoWin, scores } = gameBoard.makeAMove(event, canvasSize);
-
-    if (whoWin !== null) {
-      showWinner(whoWin);
-      updateScores(scores);
-    }
-  });
+  canvasGame.addEventListener('mouseup', makeAMoveEventListener);
 }
 
 game3.addEventListener('click', () => showGameBoard(3));
@@ -91,11 +97,12 @@ function replayHandler() {
 
     gameBoard.resetGameScores();
     gameBoard.drawBoard({ canvasSize });
-    gameBoard.initializeBoardSquares(canvasSize);
+    gameBoard.initializeBoardSquares();
 
     updateScores();
 
     alertBox.style.display = 'none';
+    canvasGame.addEventListener('mouseup', makeAMoveEventListener);
   });
 }
 
@@ -106,6 +113,7 @@ function backToMenuHandler() {
     startMenu.style.display = 'flex';
     alertBox.style.display = 'none';
   });
+  canvasGame.removeEventListener('mouseup', makeAMoveEventListener);
 }
 
 function updateScores(scores?: GameScoresType) {
@@ -117,12 +125,17 @@ function showWinner(who: CheckWinnerResultType) {
   alertBox.style.display = 'block';
   alerText.textContent = who === DRAW_TEXT ? who : `${who} wins!`;
 
-  continueBtn.addEventListener('click', () => {
-    const { clientHeight, clientWidth } = gameWrapper;
-    const canvasSize = Math.min(clientWidth, clientHeight) * CANVAS_SIZE_RATIO;
+  continueBtn.addEventListener(
+    'click',
+    () => {
+      const { clientHeight, clientWidth } = gameWrapper;
+      const canvasSize = Math.min(clientWidth, clientHeight) * CANVAS_SIZE_RATIO;
 
-    gameBoard.drawBoard({ canvasSize });
-    gameBoard.initializeBoardSquares(canvasSize);
-    alertBox.style.display = 'none';
-  });
+      gameBoard.drawBoard({ canvasSize });
+      gameBoard.initializeBoardSquares();
+      canvasGame.addEventListener('mouseup', makeAMoveEventListener);
+      alertBox.style.display = 'none';
+    },
+    { once: true },
+  );
 }

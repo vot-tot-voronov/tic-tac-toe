@@ -1,20 +1,19 @@
-:root {
-  // COLORS
-  --primary-color: #e8ce06;
-  --primary-dark: #192313;
-  --primary-dark-rgb: 25 35 19;
-  --black: #000;
-  --white: #fff;
-  --primary-orange: #fb8455;
-  --secondary-primary-color: #fdcdba;
-  --secondary-black: #0c0c0c;
+// COLORS
+$primary-color: #e8ce06;
+$primary-dark: #192313;
+$primary-dark-rgb: 25, 35, 19;
+$primary-dark-opacity-9: rgb(25 35 19 / 90%);
+$primary-dark-opacity-0: rgb(25 35 19 / 0%);
+$black: #000;
+$primary-orange: #fb8455;
+$secondary-primary-color: #fdcdba;
+$secondary-black: #0c0c0c;
 
-  // FONTS
-  --default-font-size: 1.6rem;
-  --m-font-size: 2.4rem;
-  --l-font-size: 3.4rem;
-  --xl-font-size: 6.4rem;
+// FONTS
+$default-font-size: 1.6rem;
+$m-font-size: 2.4rem;
+$l-font-size: 3.4rem;
+$xl-font-size: 6.4rem;
 
-  // SIZES
-  --height-m: 4rem;
-}
+// SIZES
+$height-m: 4rem;

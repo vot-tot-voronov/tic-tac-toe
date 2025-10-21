@@ -1,18 +1,20 @@
+@use '../abstracts/variables';
+
 .input {
   max-width: 25rem;
   width: 100%;
-  height: var(--height-m);
+  height: variables.$height-m;
   text-align: center;
-  background: var(--primary-dark);
+  background: variables.$primary-dark;
   border-radius: 20%;
   border: none;
-  font-size: var(--m-font-size);
-  color: var(--primary-orange);
+  font-size: variables.$m-font-size;
+  color: variables.$primary-orange;
   outline: none;
   transition: all 0.2s ease;
 
   &:hover {
-    color: var(--secondary-primary-color);
+    color: variables.$secondary-primary-color;
     background: #000;
   }
 }
