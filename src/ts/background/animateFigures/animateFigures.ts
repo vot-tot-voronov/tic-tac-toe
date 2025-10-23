@@ -12,12 +12,12 @@ export function animateFigures(props: IAnimateFiguresProps) {
   canvasContext.fillStyle = 'rgba(25, 23, 23, 0.5)';
   canvasContext.fillRect(0, 0, widthBg, heightBg);
 
-  while (balls.length < 25) {
+  while (balls.length < 10) {
     const ball = new Ball(
       random(0, widthBg),
       random(0, heightBg),
-      random(-7, 7),
-      random(-7, 7),
+      random(-3, 3),
+      random(-3, 3),
       'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')',
       random(10, 20),
     );
@@ -27,8 +27,8 @@ export function animateFigures(props: IAnimateFiguresProps) {
     const cross = new Cross(
       random(0, widthBg),
       random(0, heightBg),
-      random(-7, 7),
-      random(-7, 7),
+      random(-3, 3),
+      random(-3, 3),
       'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')',
       random(10, 20),
     );
