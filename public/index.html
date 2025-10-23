@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet" />
+    <title>TicTacToe</title>
+  </head>
+  <body>
+    <div class="game-warapper">
+      <div class="start-menu">
+        <h1 class="main-title">Tic-Tac-Toe Game</h1>
+        <h2 class="second-title">Start Game</h2>
+        <div class="start-menu__btns">
+          <button id="start3on3" class="btn btn--large" type="button">3 X 3</button>
+          <button id="start5on5" class="btn btn--large" type="button">5 X 5</button>
+          <button id="startNonN" class="btn btn--large" type="button">N X N</button>
+        </div>
+      </div>
+
+      <div class="board-dimension">
+        <h2 class="second-title">Specify the board size for the game</h2>
+        <div class="input__service">
+          <button id="decrease-btn" class="btn btn--rounded" type="button">-</button>
+          <input id="dimension-input" class="input" type="number" min="3" max="10" value="3" />
+          <button id="increase-btn" class="btn btn--rounded" type="button">+</button>
+        </div>
+        <button id="play-btn" class="btn" type="button">Play!</button>
+      </div>
+
+      <div class="navigation">
+        <button id="menu-btn" type="button" class="btn">Menu</button>
+        <button id="replay-btn" type="button" class="btn">Replay</button>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="tic-tac-toe" class="canvas-wrapper__canvas"></canvas>
+        <div class="canvas-wrapper__scores">
+          <p id="score-X" class="canvas-wrapper__score"></p>
+          <p id="score-O" class="canvas-wrapper__score"></p>
+        </div>
+        <div class="alert-box">
+          <p class="alert-box__text"></p>
+          <button id="continue-btn" type="button" class="btn btn--continue alert-box__btn">Continue!</button>
+        </div>
+      </div>
+    </div>
+    <canvas id="bg-canvas"></canvas>
+  </body>
+</html>

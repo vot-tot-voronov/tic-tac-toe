@@ -1,0 +1,16 @@
+.board-dimension {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  text-align: center;
+
+  .input__service {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.4rem;
+    margin: 3.2rem;
+  }
+}

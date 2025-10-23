@@ -1,0 +1,17 @@
+@use './base/base';
+@use './base/typography';
+@use './components//button';
+@use './components/input';
+@use './components/alert';
+@use './layout/startMenu';
+@use './layout//navigation';
+@use './layout/dimensionService';
+@use './layout/canvasWrapper';
+
+.game-warapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+}

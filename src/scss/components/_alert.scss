@@ -1,0 +1,24 @@
+@use '../abstracts/variables';
+
+.alert-box {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 45rem;
+  width: 100%;
+  text-align: center;
+  padding: 2.4rem;
+  background-color: variables.$primary-dark-opacity-9;
+  border-radius: 1.6rem;
+  display: none;
+
+  &__text {
+    font-size: variables.$l-font-size;
+    color: variables.$primary-orange;
+  }
+
+  &__btn {
+    margin-top: 2.4rem;
+  }
+}

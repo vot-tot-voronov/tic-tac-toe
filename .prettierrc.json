@@ -1,0 +1,23 @@
+{
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "arrowParens": "avoid",
+  "parser": "typescript",
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": { "parser": "json" }
+    },
+    {
+      "files": "*.scss",
+      "options": { "parser": "scss" }
+    },
+    {
+      "files": "*.html",
+      "options": { "parser": "html" }
+    }
+  ]
+}
